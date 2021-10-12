@@ -13,6 +13,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
+
 public class GameManager : MonoBehaviour
 {
     /***VARIABLES***/
@@ -21,7 +22,7 @@ public class GameManager : MonoBehaviour
     public static GameManager GM { get { return gm; } }//public
     void CheckGameManagerIsInScene()
     {
-        if (gm == null)
+       if (gm == null)
         {
             gm = this;
         }
@@ -30,6 +31,8 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
         }
         DontDestroyOnLoad(this);
+        DontDestroyOnLoad(this.myCanvas);
+        IsPlayerDead = false;
     }// end CheckGameManagerIsInScene()
     #endregion
 
@@ -43,17 +46,21 @@ public class GameManager : MonoBehaviour
     public TMP_Sprite NextSceneButton = null;
     public static bool IsPlayerDead = false;
     public static bool Level2 = false;
-    public Canvas ourCanvas = null;
+    public Canvas myCanvas = null;
 
 
     private void Awake()
     {
         CheckGameManagerIsInScene();
+
+        
+        //gm.myCanvas.gameObject.SetActive(true);
+
     }// End Awake
     // Start is called before the first frame update
     void Start()
     {
-        gm.ourCanvas.gameObject.SetActive(true);
+       
     }
 
     // Update is called once per frame
@@ -63,46 +70,40 @@ public class GameManager : MonoBehaviour
         {
             ScoreText.text = ScorePrefix + Score.ToString();
         }
-        if (Score >= 50)
+        if (Score >= 500)
         {
 
     
             if (SceneManager.GetActiveScene().name == "SampleScene")
             {
                 NextScene();
+
+                /*ScoreText = null;
+                GameOverText = null;
+                NextSceneText = null;
+                WinnerText = null;
+                myCanvas = null;*/
+                Score = 0;
             }
         }
         if (Score >= 1000)
         {
             WinGame();
         }
-        if (IsPlayerDead)
-        {
-            GameOver();
-        }
+
     }
 
-    public static void GameOver()
-    {
-        if (gm.GameOverText != null)
-        {
-            gm.GameOverText.gameObject.SetActive(true);
-        }
-    }//end GameOver()
     public static void NextScene()
     {
         if (Level2 == false)
         {
-            if (gm.NextSceneText != null)
-            {
-                gm.NextSceneText.gameObject.SetActive(true);
-            }
             Score = 0;
             gm.Waiter();
             SceneManager.LoadScene("SceneLevel2");
             gm.Waiter();
-            gm.NextSceneText.gameObject.SetActive(false);
-            Level2 = true;
+
+            IsPlayerDead = false;
+            
         }
     }
 
